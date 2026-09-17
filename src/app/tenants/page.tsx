@@ -208,15 +208,15 @@ export default function TenantsPage() {
 
   return (
     <div className="bg-white border border-slate-200 rounded-md shadow-2xs overflow-hidden">
-      {/* Top Filter Bar (Replicating AnViet CRM Layout) */}
-      <div className="p-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2.5 bg-white text-xs">
+      {/* Top Filter Bar (Responsive AnViet CRM Layout) */}
+      <div className="p-2.5 sm:p-3 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-white text-xs">
         {/* Left Filter Dropdowns & Search */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           {/* Status Dropdown */}
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
           >
             <option value="ALL">Trạng thái: Tất cả</option>
             <option value="REGISTERED">Đã khai báo CA</option>
@@ -228,7 +228,7 @@ export default function TenantsPage() {
           <select
             value={selectedRoomFilter}
             onChange={(e) => setSelectedRoomFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
           >
             <option value="ALL">Phòng: Tất cả</option>
             {filteredRooms.map((r) => (
@@ -239,7 +239,7 @@ export default function TenantsPage() {
           </select>
 
           {/* Search Input */}
-          <div className="relative w-56 sm:w-64">
+          <div className="relative w-full sm:w-60">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -252,22 +252,24 @@ export default function TenantsPage() {
         </div>
 
         {/* Right Action Utilities */}
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => setSearchTerm('')}
-            className="p-1.5 text-slate-500 hover:text-slate-800 rounded hover:bg-slate-100 transition-colors"
-            title="Làm mới bộ lọc"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
+        <div className="flex flex-wrap items-center justify-between md:justify-end gap-1.5 w-full md:w-auto shrink-0">
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setSearchTerm('')}
+              className="p-1.5 text-slate-500 hover:text-slate-800 rounded hover:bg-slate-100 transition-colors"
+              title="Làm mới bộ lọc"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
 
-          <button
-            onClick={() => setIsExportTamTruOpen(true)}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium cursor-pointer"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Khai báo tạm trú</span>
-          </button>
+            <button
+              onClick={() => setIsExportTamTruOpen(true)}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium cursor-pointer"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="hidden xs:inline sm:inline">Khai báo tạm trú</span>
+            </button>
+          </div>
 
           <button
             onClick={() => setIsAddModalOpen(true)}

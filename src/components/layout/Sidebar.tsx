@@ -14,8 +14,7 @@ import {
   Settings,
   LayoutDashboard,
   LogOut,
-  ChevronRight,
-  Shield,
+  X,
   PanelLeftClose,
 } from 'lucide-react';
 
@@ -29,7 +28,12 @@ interface NavGroup {
   }[];
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpenMobile?: boolean;
+  onCloseMobile?: () => void;
+}
+
+export function Sidebar({ isOpenMobile = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
 
   const navGroups: NavGroup[] = [
@@ -64,10 +68,10 @@ export function Sidebar() {
     },
   ];
 
-  return (
-    <aside className="w-56 bg-white border-r border-slate-200 flex flex-col shrink-0 select-none text-[13px] text-slate-700">
+  const renderNavContent = (isMobile = false) => (
+    <>
       {/* Brand Header */}
-      <div className="h-14 px-4 border-b border-slate-200 flex items-center justify-between">
+      <div className="h-14 px-4 border-b border-slate-200 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-md bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
             <Building2 className="w-4 h-4" />
@@ -80,9 +84,19 @@ export function Sidebar() {
           </div>
         </div>
 
-        <button className="text-slate-400 hover:text-slate-600 p-1">
-          <PanelLeftClose className="w-4 h-4" />
-        </button>
+        {isMobile ? (
+          <button
+            onClick={onCloseMobile}
+            className="text-slate-400 hover:text-slate-700 p-1.5 rounded-md hover:bg-slate-100 transition-colors"
+            title="Đóng menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        ) : (
+          <button className="text-slate-400 hover:text-slate-600 p-1" title="Thu gọn">
+            <PanelLeftClose className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Nav Menu Groups */}
@@ -102,7 +116,10 @@ export function Sidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    onClick={() => {
+                      if (isMobile && onCloseMobile) onCloseMobile();
+                    }}
+                    className={`flex items-center justify-between px-2.5 py-2 md:py-1.5 rounded-md text-xs font-medium transition-colors ${
                       isActive
                         ? 'bg-slate-100 text-slate-950 font-bold'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -131,7 +148,7 @@ export function Sidebar() {
       </div>
 
       {/* User Footer (Matching Reference Image) */}
-      <div className="p-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/50">
+      <div className="p-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/50 shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-sm bg-slate-900 text-white flex items-center justify-center font-bold text-[10px]">
             AD
@@ -149,13 +166,39 @@ export function Sidebar() {
               localStorage.removeItem('trocloud_auth');
               sessionStorage.removeItem('trocloud_auth');
             }
+            if (isMobile && onCloseMobile) onCloseMobile();
           }}
           className="p-1.5 text-slate-400 hover:text-rose-600 rounded transition-colors"
           title="Đăng xuất"
         >
-          <LogOut className="w-3.5 h-3.5" />
+          <LogOut className="w-4 h-4" />
         </Link>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* 1. Desktop Static Sidebar */}
+      <aside className="hidden md:flex w-56 bg-white border-r border-slate-200 flex-col shrink-0 select-none text-[13px] text-slate-700 h-screen">
+        {renderNavContent(false)}
+      </aside>
+
+      {/* 2. Mobile Off-Canvas Drawer */}
+      {isOpenMobile && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          {/* Backdrop overlay */}
+          <div
+            className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={onCloseMobile}
+          />
+
+          {/* Drawer sidebar */}
+          <aside className="relative w-64 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200 select-none">
+            {renderNavContent(true)}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

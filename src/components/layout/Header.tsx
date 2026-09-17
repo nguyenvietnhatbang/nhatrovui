@@ -2,10 +2,14 @@
 
 import React, { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { ChevronDown, RefreshCw, Plus, Building2, Check } from 'lucide-react';
+import { ChevronDown, RefreshCw, Plus, Building2, Check, Menu } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
-export function Header() {
+interface HeaderProps {
+  onToggleMobileMenu?: () => void;
+}
+
+export function Header({ onToggleMobileMenu }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { properties, selectedPropertyId, setSelectedPropertyId, selectedProperty } = useApp();
@@ -40,19 +44,27 @@ export function Header() {
   const breadcrumb = getBreadcrumb();
 
   return (
-    <header className="h-14 bg-white border-b border-slate-200 px-5 flex items-center justify-between sticky top-0 z-30 select-none">
-      {/* Left: Breadcrumb with dropdown (matching AnViet CRM) */}
-      <div className="flex items-center gap-2">
-        <span className="text-slate-500 text-xs font-normal">{breadcrumb.parent} /</span>
+    <header className="h-14 bg-white border-b border-slate-200 px-3 sm:px-5 flex items-center justify-between sticky top-0 z-30 select-none">
+      {/* Left: Hamburger (Mobile) + Breadcrumb with dropdown */}
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <button
+          onClick={onToggleMobileMenu}
+          className="md:hidden p-1.5 -ml-1 text-slate-600 hover:text-slate-900 rounded-md hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+          title="Mở danh mục menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        <span className="text-slate-400 text-xs font-normal hidden sm:inline">{breadcrumb.parent} /</span>
 
         {/* Dropdown for Branch Selection */}
-        <div className="relative">
+        <div className="relative min-w-0">
           <button
             onClick={() => setIsBranchDropdownOpen(!isBranchDropdownOpen)}
-            className="flex items-center gap-1.5 text-xs font-bold text-slate-900 hover:text-blue-600 transition-colors cursor-pointer"
+            className="flex items-center gap-1 text-xs font-bold text-slate-900 hover:text-blue-600 transition-colors cursor-pointer max-w-[150px] sm:max-w-[240px] md:max-w-none"
           >
-            <span>{selectedProperty ? selectedProperty.name : 'Tất cả cơ sở'}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            <span className="truncate">{selectedProperty ? selectedProperty.name : 'Tất cả cơ sở'}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
           </button>
 
           {isBranchDropdownOpen && (

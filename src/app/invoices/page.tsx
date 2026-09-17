@@ -111,14 +111,14 @@ export default function InvoicesPage() {
 
   return (
     <div className="bg-white border border-slate-200 rounded-md shadow-2xs overflow-hidden">
-      {/* Top Filter Bar */}
-      <div className="p-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2.5 bg-white text-xs">
-        <div className="flex flex-wrap items-center gap-2">
+      {/* Top Filter Bar (Responsive) */}
+      <div className="p-2.5 sm:p-3 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-white text-xs">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           {/* Month Dropdown */}
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
           >
             <option value="2026-09">Kỳ: Tháng 09/2026</option>
             <option value="2026-08">Kỳ: Tháng 08/2026</option>
@@ -129,7 +129,7 @@ export default function InvoicesPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value as any)}
-            className="px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
           >
             <option value="ALL">Trạng thái: Tất cả</option>
             <option value="UNPAID">Chưa thanh toán</option>
@@ -138,7 +138,7 @@ export default function InvoicesPage() {
           </select>
 
           {/* Search Input */}
-          <div className="relative w-56 sm:w-64">
+          <div className="relative w-full sm:w-60">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -151,13 +151,13 @@ export default function InvoicesPage() {
         </div>
 
         {/* Right Tools */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full md:w-auto shrink-0 justify-end">
           <button
             onClick={() => {
               const count = generateInvoicesForMonth(activeProperty.id, selectedMonth);
               alert(`Đã lập thành công ${count} hóa đơn tiền phòng mới cho kỳ ${selectedMonth}!`);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
+            className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Xuất Hóa Đơn Kỳ Này</span>

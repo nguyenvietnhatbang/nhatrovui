@@ -176,8 +176,8 @@ export default function MaintenancePage() {
         </div>
 
         {/* Right: Search + View toggle + Create button */}
-        <div className="flex items-center gap-2">
-          <div className="relative w-64">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full md:w-auto">
+          <div className="relative w-full sm:w-60">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -191,34 +191,36 @@ export default function MaintenancePage() {
             />
           </div>
 
-          <div className="flex items-center border border-slate-200 rounded-sm bg-slate-50 p-0.5">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center border border-slate-200 rounded-sm bg-slate-50 p-0.5">
+              <button
+                onClick={() => setViewMode('TABLE')}
+                title="Xem dạng bảng"
+                className={`p-1.5 rounded-xs transition-colors cursor-pointer ${
+                  viewMode === 'TABLE' ? 'bg-white shadow-2xs text-slate-900' : 'text-slate-400'
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setViewMode('KANBAN')}
+                title="Xem dạng cột Kanban"
+                className={`p-1.5 rounded-xs transition-colors cursor-pointer ${
+                  viewMode === 'KANBAN' ? 'bg-white shadow-2xs text-slate-900' : 'text-slate-400'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
             <button
-              onClick={() => setViewMode('TABLE')}
-              title="Xem dạng bảng"
-              className={`p-1.5 rounded-xs transition-colors cursor-pointer ${
-                viewMode === 'TABLE' ? 'bg-white shadow-2xs text-slate-900' : 'text-slate-400'
-              }`}
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-slate-950 hover:bg-slate-800 text-white text-xs font-medium transition-colors cursor-pointer shrink-0 shadow-2xs"
             >
-              <List className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setViewMode('KANBAN')}
-              title="Xem dạng cột Kanban"
-              className={`p-1.5 rounded-xs transition-colors cursor-pointer ${
-                viewMode === 'KANBAN' ? 'bg-white shadow-2xs text-slate-900' : 'text-slate-400'
-              }`}
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
+              <Plus className="w-3.5 h-3.5" />
+              <span>Báo sự cố</span>
             </button>
           </div>
-
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-slate-950 hover:bg-slate-800 text-white text-xs font-medium transition-colors cursor-pointer shrink-0 shadow-2xs"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Báo sự cố</span>
-          </button>
         </div>
       </div>
 

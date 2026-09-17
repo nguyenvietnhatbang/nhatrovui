@@ -302,8 +302,8 @@ export default function TenantDetailPage() {
 
       {/* 3. SATELLITE MANAGEMENT TABS */}
       <div className="bg-white rounded-md border border-slate-200 shadow-2xs overflow-hidden">
-        {/* Tab Headers */}
-        <div className="border-b border-slate-200 bg-slate-50/80 px-2 flex flex-wrap items-center gap-1 text-xs">
+        {/* Tab Headers - Touch scrollable on mobile */}
+        <div className="border-b border-slate-200 bg-slate-50/80 px-2 flex items-center gap-1 text-xs overflow-x-auto whitespace-nowrap">
           {[
             { id: 'PROFILE', label: 'Hồ sơ định danh & Tạm trú', icon: User },
             {
@@ -337,10 +337,10 @@ export default function TenantDetailPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-1.5 px-3 py-2.5 font-bold border-b-2 transition-colors cursor-pointer text-xs ${
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-2.5 font-bold border-b-2 transition-colors cursor-pointer text-xs ${
                   isActive
                     ? 'border-slate-900 text-slate-950 bg-white'
-                    : 'border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
+                    : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60'
                 }`}
               >
                 <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-slate-900' : 'text-slate-400'}`} />

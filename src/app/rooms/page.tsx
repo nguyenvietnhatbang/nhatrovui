@@ -160,14 +160,14 @@ export default function RoomsPage() {
 
   return (
     <div className="bg-white border border-slate-200 rounded-md shadow-2xs overflow-hidden">
-      {/* Filter Bar (AnViet CRM style) */}
-      <div className="p-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2.5 bg-white text-xs">
-        <div className="flex flex-wrap items-center gap-2">
+      {/* Filter Bar (Responsive AnViet CRM style) */}
+      <div className="p-2.5 sm:p-3 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-white text-xs">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           {/* Status Dropdown */}
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value as any)}
-            className="px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
           >
             <option value="ALL">Trạng thái: Tất cả</option>
             <option value="OCCUPIED">Đang thuê</option>
@@ -183,7 +183,7 @@ export default function RoomsPage() {
             onChange={(e) =>
               setSelectedFloor(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))
             }
-            className="px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 font-medium text-xs focus:outline-hidden focus:border-slate-800 cursor-pointer"
           >
             <option value="ALL">Tầng: Tất cả</option>
             {availableFloors.map((floor) => (
@@ -194,7 +194,7 @@ export default function RoomsPage() {
           </select>
 
           {/* Search Input */}
-          <div className="relative w-56 sm:w-64">
+          <div className="relative w-full sm:w-60">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -207,7 +207,7 @@ export default function RoomsPage() {
         </div>
 
         {/* Right Tools & View Toggle */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto shrink-0">
           <div className="flex items-center border border-slate-200 rounded p-0.5">
             <button
               onClick={() => setViewMode('TABLE')}
