@@ -239,145 +239,248 @@ export default function RoomsPage() {
         </div>
       </div>
 
-      {/* Main Table Grid */}
+      {/* Main Content Area */}
       {viewMode === 'TABLE' ? (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-800">
-            <thead className="border-b border-slate-200 bg-slate-100/90 text-slate-900 text-xs font-bold uppercase tracking-wider">
-              <tr>
-                <th className="py-2.5 px-3 w-8 text-center">
-                  <input
-                    type="checkbox"
-                    onChange={handleSelectAll}
-                    checked={
-                      paginatedRooms.length > 0 &&
-                      paginatedRooms.every((r) => selectedIds.has(r.id))
-                    }
-                    className="rounded border-slate-300 text-slate-900"
-                  />
-                </th>
-                <th className="py-2.5 px-3">Mã phòng</th>
-                <th className="py-2.5 px-3">Tầng</th>
-                <th className="py-2.5 px-3">Loại phòng</th>
-                <th className="py-2.5 px-3">Diện tích</th>
-                <th className="py-2.5 px-3 text-right">Đơn giá thuê</th>
-                <th className="py-2.5 px-3">Khách thuê hiện tại</th>
-                <th className="py-2.5 px-3">Số điện thoại</th>
-                <th className="py-2.5 px-3 text-center">Trạng thái</th>
-                <th className="py-2.5 px-3 text-center w-28">Thao tác</th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-slate-100">
-              {paginatedRooms.length === 0 ? (
+        <>
+          {/* Desktop High-Density Table (Hidden on Mobile) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-800">
+              <thead className="border-b border-slate-200 bg-slate-100/90 text-slate-900 text-xs font-bold uppercase tracking-wider">
                 <tr>
-                  <td colSpan={10} className="py-8 text-center text-slate-400">
-                    Không tìm thấy phòng nào phù hợp với bộ lọc.
-                  </td>
+                  <th className="py-2.5 px-3 w-8 text-center">
+                    <input
+                      type="checkbox"
+                      onChange={handleSelectAll}
+                      checked={
+                        paginatedRooms.length > 0 &&
+                        paginatedRooms.every((r) => selectedIds.has(r.id))
+                      }
+                      className="rounded border-slate-300 text-slate-900"
+                    />
+                  </th>
+                  <th className="py-2.5 px-3">Mã phòng</th>
+                  <th className="py-2.5 px-3">Tầng</th>
+                  <th className="py-2.5 px-3">Loại phòng</th>
+                  <th className="py-2.5 px-3">Diện tích</th>
+                  <th className="py-2.5 px-3 text-right">Đơn giá thuê</th>
+                  <th className="py-2.5 px-3">Khách thuê hiện tại</th>
+                  <th className="py-2.5 px-3">Số điện thoại</th>
+                  <th className="py-2.5 px-3 text-center">Trạng thái</th>
+                  <th className="py-2.5 px-3 text-center w-28">Thao tác</th>
                 </tr>
-              ) : (
-                paginatedRooms.map((room) => {
-                  const isSelected = selectedIds.has(room.id);
-                  const tenant = tenants.find((t) => t.id === room.currentTenantId);
-                  const statusCfg = ROOM_STATUS_CONFIG[room.status];
+              </thead>
 
-                  return (
-                    <tr
-                      key={room.id}
-                      className={`hover:bg-slate-50/80 transition-colors ${
-                        isSelected ? 'bg-blue-50/30' : ''
-                      }`}
-                    >
-                      <td className="py-2 px-3 text-center">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => handleToggleSelect(room.id)}
-                          className="rounded border-slate-300 text-slate-900"
-                        />
-                      </td>
+              <tbody className="divide-y divide-slate-100">
+                {paginatedRooms.length === 0 ? (
+                  <tr>
+                    <td colSpan={10} className="py-8 text-center text-slate-400">
+                      Không tìm thấy phòng nào phù hợp với bộ lọc.
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedRooms.map((room) => {
+                    const isSelected = selectedIds.has(room.id);
+                    const tenant = tenants.find((t) => t.id === room.currentTenantId);
+                    const statusCfg = ROOM_STATUS_CONFIG[room.status];
 
-                      <td className="py-2 px-3">
-                        <Link
-                          href={`/rooms/${room.id}`}
-                          className="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors text-xs"
-                          title="Xem chi tiết phòng 360°"
-                        >
-                          {room.roomNumber}
-                        </Link>
-                      </td>
+                    return (
+                      <tr
+                        key={room.id}
+                        className={`hover:bg-slate-50/80 transition-colors ${
+                          isSelected ? 'bg-blue-50/30' : ''
+                        }`}
+                      >
+                        <td className="py-2 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleToggleSelect(room.id)}
+                            className="rounded border-slate-300 text-slate-900"
+                          />
+                        </td>
 
-                      <td className="py-2 px-3 text-slate-700 font-medium">Tầng {room.floor}</td>
-
-                      <td className="py-2 px-3 font-medium text-slate-800">{room.type}</td>
-
-                      <td className="py-2 px-3 text-slate-600 font-medium">{room.area} m²</td>
-
-                      <td className="py-2 px-3 text-right font-mono font-black text-slate-900">
-                        {formatCurrency(room.basePrice)}
-                      </td>
-
-                      <td className="py-2 px-3">
-                        {tenant ? (
-                          <Link
-                            href={`/tenants/${tenant.id}`}
-                            className="font-bold text-slate-900 hover:text-blue-600 transition-colors"
-                            title="Xem hồ sơ khách"
-                          >
-                            {tenant.name}
-                          </Link>
-                        ) : (
-                          <span className="text-slate-400 italic">Chưa có khách</span>
-                        )}
-                      </td>
-
-                      <td className="py-2 px-3 font-mono text-slate-900 font-medium">
-                        {tenant ? tenant.phone : '-'}
-                      </td>
-
-                      <td className="py-2 px-3 text-center">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${statusCfg.badgeClass}`}
-                        >
-                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusCfg.dotClass}`} />
-                          {statusCfg.label}
-                        </span>
-                      </td>
-
-                      <td className="py-2 px-3 text-center">
-                        <div className="flex items-center justify-center gap-2">
+                        <td className="py-2 px-3">
                           <Link
                             href={`/rooms/${room.id}`}
-                            className="text-slate-400 hover:text-blue-600 transition-colors"
+                            className="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors text-xs"
                             title="Xem chi tiết phòng 360°"
                           >
-                            <Eye className="w-3.5 h-3.5" />
+                            {room.roomNumber}
                           </Link>
+                        </td>
 
-                          <button
-                            onClick={() => handleOpenEdit(room)}
-                            className="text-slate-400 hover:text-blue-600 transition-colors cursor-pointer"
-                            title="Sửa phòng"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
+                        <td className="py-2 px-3 text-slate-700 font-medium">Tầng {room.floor}</td>
 
-                          <button
-                            onClick={() => setDeletingRoom(room)}
-                            className="text-rose-400 hover:text-rose-600 transition-colors cursor-pointer"
-                            title="Xóa phòng"
+                        <td className="py-2 px-3 font-medium text-slate-800">{room.type}</td>
+
+                        <td className="py-2 px-3 text-slate-600 font-medium">{room.area} m²</td>
+
+                        <td className="py-2 px-3 text-right font-mono font-black text-slate-900">
+                          {formatCurrency(room.basePrice)}
+                        </td>
+
+                        <td className="py-2 px-3">
+                          {tenant ? (
+                            <Link
+                              href={`/tenants/${tenant.id}`}
+                              className="font-bold text-slate-900 hover:text-blue-600 transition-colors"
+                              title="Xem hồ sơ khách"
+                            >
+                              {tenant.name}
+                            </Link>
+                          ) : (
+                            <span className="text-slate-400 italic">Chưa có khách</span>
+                          )}
+                        </td>
+
+                        <td className="py-2 px-3 font-mono text-slate-900 font-medium">
+                          {tenant ? tenant.phone : '-'}
+                        </td>
+
+                        <td className="py-2 px-3 text-center">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${statusCfg.badgeClass}`}
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusCfg.dotClass}`} />
+                            {statusCfg.label}
+                          </span>
+                        </td>
+
+                        <td className="py-2 px-3 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <Link
+                              href={`/rooms/${room.id}`}
+                              className="text-slate-400 hover:text-blue-600 transition-colors"
+                              title="Xem chi tiết phòng 360°"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </Link>
+
+                            <button
+                              onClick={() => handleOpenEdit(room)}
+                              className="text-slate-400 hover:text-blue-600 transition-colors cursor-pointer"
+                              title="Sửa phòng"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+
+                            <button
+                              onClick={() => setDeletingRoom(room)}
+                              className="text-rose-400 hover:text-rose-600 transition-colors cursor-pointer"
+                              title="Xóa phòng"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards View (Hidden on Desktop) */}
+          <div className="block md:hidden p-2.5 space-y-2">
+            {paginatedRooms.length === 0 ? (
+              <div className="py-8 text-center text-slate-400 text-xs">
+                Không tìm thấy phòng nào phù hợp với bộ lọc.
+              </div>
+            ) : (
+              paginatedRooms.map((room) => {
+                const tenant = tenants.find((t) => t.id === room.currentTenantId);
+                const statusCfg = ROOM_STATUS_CONFIG[room.status];
+
+                return (
+                  <div
+                    key={room.id}
+                    className="p-3 bg-white rounded-md border border-slate-200 shadow-2xs space-y-2.5"
+                  >
+                    {/* Card Header: Room number + status */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/rooms/${room.id}`}
+                          className="font-bold text-sm text-blue-600 hover:underline"
+                        >
+                          Phòng {room.roomNumber}
+                        </Link>
+                        <span className="text-[11px] text-slate-500 font-medium">
+                          Tầng {room.floor} • {room.type} • {room.area}m²
+                        </span>
+                      </div>
+
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${statusCfg.badgeClass}`}
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusCfg.dotClass}`} />
+                        {statusCfg.label}
+                      </span>
+                    </div>
+
+                    {/* Card Content: Price & Tenant */}
+                    <div className="grid grid-cols-2 gap-2 text-xs pt-1.5 border-t border-slate-100">
+                      <div>
+                        <div className="text-[10px] text-slate-400 uppercase font-semibold">Giá thuê</div>
+                        <div className="font-mono font-bold text-slate-900 mt-0.5">
+                          {formatCurrency(room.basePrice)}
                         </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-[10px] text-slate-400 uppercase font-semibold">Khách thuê</div>
+                        <div className="font-medium text-slate-900 truncate mt-0.5">
+                          {tenant ? (
+                            <Link
+                              href={`/tenants/${tenant.id}`}
+                              className="font-bold text-slate-900 hover:text-blue-600"
+                            >
+                              {tenant.name}
+                            </Link>
+                          ) : (
+                            <span className="text-slate-400 italic">Chưa có khách</span>
+                          )}
+                        </div>
+                        {tenant?.phone && (
+                          <div className="text-[10px] font-mono text-slate-500">{tenant.phone}</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Card Actions */}
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                      <Link
+                        href={`/rooms/${room.id}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Xem chi tiết 360°</span>
+                      </Link>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleOpenEdit(room)}
+                          className="p-1 text-slate-500 hover:text-blue-600"
+                          title="Sửa phòng"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setDeletingRoom(room)}
+                          className="p-1 text-rose-500 hover:text-rose-700"
+                          title="Xóa phòng"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </>
       ) : (
         /* Compact Grid Matrix */
         <div className="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">

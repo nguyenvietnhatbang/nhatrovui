@@ -257,7 +257,8 @@ export default function ContractsPage() {
 
       {/* Main Table Grid */}
       <div className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-2xs">
-        <div className="overflow-x-auto">
+        {/* Table Grid (Desktop Only) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead className="bg-slate-100/90 border-b border-slate-200 text-slate-900 font-bold uppercase text-xs tracking-wider">
               <tr>
@@ -415,6 +416,142 @@ export default function ContractsPage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Cards View (Hidden on Desktop) */}
+        <div className="block md:hidden p-2.5 space-y-2">
+          {paginatedContracts.length === 0 ? (
+            <div className="py-8 text-center text-slate-400 text-xs">
+              Không tìm thấy hợp đồng nào phù hợp
+            </div>
+          ) : (
+            paginatedContracts.map((c) => {
+              const statusCfg = CONTRACT_STATUS_CONFIG[c.status];
+              const roomNum = c.roomId.replace('room-', '').toUpperCase();
+
+              return (
+                <div
+                  key={c.id}
+                  className="p-3 bg-white rounded-md border border-slate-200 shadow-2xs space-y-2.5"
+                >
+                  {/* Card Header: Code + Room + Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-sm text-slate-900">
+                          {c.code}
+                        </span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-xs font-bold text-[11px] bg-slate-100 text-slate-800 border border-slate-200">
+                          P.{roomNum}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Ký ngày: {formatDate(c.signedDate)}
+                      </div>
+                    </div>
+
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${statusCfg.badgeClass}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusCfg.dotClass}`} />
+                      {statusCfg.label}
+                    </span>
+                  </div>
+
+                  {/* Tenant info */}
+                  <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-sm border border-slate-100 text-xs">
+                    <AvatarLetter name={c.tenantName} size="sm" color="blue" />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-slate-900 truncate">{c.tenantName}</div>
+                      <div className="text-[10px] text-slate-500">Người đại diện thuê</div>
+                    </div>
+                  </div>
+
+                  {/* Contract Term */}
+                  <div className="text-xs">
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold">Thời hạn thuê:</span>
+                    <div className="text-slate-800 font-medium mt-0.5 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span>{formatDate(c.startDate)}</span>
+                      <span className="text-slate-400">→</span>
+                      <span className="font-bold text-slate-900">{formatDate(c.endDate)}</span>
+                    </div>
+                  </div>
+
+                  {/* Price & Deposit */}
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-1.5 border-t border-slate-100">
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase font-semibold">Giá thuê / tháng</span>
+                      <div className="font-mono font-bold text-slate-900 mt-0.5">
+                        {formatCurrency(c.rentPrice)}
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase font-semibold">Tiền đặt cọc</span>
+                      <div className="font-mono font-bold text-indigo-700 mt-0.5">
+                        {formatCurrency(c.depositAmount)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Actions */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                    <button
+                      onClick={() => setViewingContract(c)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Chi tiết</span>
+                    </button>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setPrintingContract(c)}
+                        className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-sm border border-slate-200 transition-colors cursor-pointer"
+                        title="In hợp đồng"
+                      >
+                        <Printer className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => handleOpenEdit(c)}
+                        className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-sm border border-slate-200 transition-colors cursor-pointer"
+                        title="Sửa hợp đồng"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      {c.status !== 'TERMINATED' && (
+                        <button
+                          onClick={() => {
+                            setRenewingContract(c);
+                            setNewRenewEndDate('2027-09-01');
+                          }}
+                          className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-sm border border-amber-200 transition-colors cursor-pointer"
+                          title="Tái ký / Gia hạn"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => setDeletingContract(c)}
+                        className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-sm border border-rose-200 transition-colors cursor-pointer"
+                        title={c.status === 'TERMINATED' ? 'Xóa hợp đồng' : 'Thanh lý hợp đồng'}
+                      >
+                        {c.status === 'TERMINATED' ? (
+                          <Trash2 className="w-3.5 h-3.5" />
+                        ) : (
+                          <LogOut className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
         {/* Bottom Pagination Bar */}

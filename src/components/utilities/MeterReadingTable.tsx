@@ -186,9 +186,9 @@ export function MeterReadingTable({ month }: { month: string }) {
         </div>
       </div>
 
-      {/* Editable Table */}
+      {/* Editable Table (Desktop Only) */}
       <div className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-2xs">
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead className="bg-slate-100/90 border-b border-slate-200 text-slate-900 font-bold uppercase text-xs tracking-wider">
               <tr>
@@ -327,6 +327,153 @@ export function MeterReadingTable({ month }: { month: string }) {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Cards View (Hidden on Desktop) */}
+        <div className="block md:hidden p-2.5 space-y-3">
+          {rows.map((row, index) => {
+            const electricUsage = row.newElectric - row.oldElectric;
+            const waterUsage = row.newWater - row.oldWater;
+            const isElectricAbnormal = electricUsage < 0 || electricUsage > 350;
+            const isWaterAbnormal = waterUsage < 0 || waterUsage > 30;
+
+            const electricCost = Math.max(0, electricUsage) * activeProperty.defaultRates.electricPrice;
+            const waterCost = Math.max(0, waterUsage) * activeProperty.defaultRates.waterPrice;
+            const servicesCost =
+              activeProperty.defaultRates.garbageFee +
+              activeProperty.defaultRates.internetFee +
+              activeProperty.defaultRates.serviceFee +
+              row.motorbikeCount * activeProperty.defaultRates.parkingMotorbikeFee +
+              row.otherFee;
+            const totalRow = electricCost + waterCost + servicesCost;
+
+            return (
+              <div
+                key={row.roomId}
+                className="p-3 bg-white rounded-md border border-slate-200 shadow-2xs space-y-3"
+              >
+                {/* Card Header: Room, Tenant, Total */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-black text-sm text-slate-900">
+                      Phòng {row.roomNumber}
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">
+                      {row.tenantName}
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Dịch vụ tháng</span>
+                    <span className="text-sm font-black font-mono text-blue-700">
+                      {formatCurrency(totalRow)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Electric Box */}
+                <div className="p-2.5 bg-amber-50/40 border border-amber-200/80 rounded-sm space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 font-bold text-amber-900">
+                      <Zap className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Chỉ số Điện (kWh)</span>
+                    </div>
+                    <div className="font-mono text-xs font-bold">
+                      {isElectricAbnormal ? (
+                        <span className="text-rose-600 inline-flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          +{electricUsage} kWh
+                        </span>
+                      ) : (
+                        <span className="text-amber-800">+{electricUsage} kWh</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">Số cũ:</span>
+                      <span className="font-mono font-medium text-slate-700 text-xs">{row.oldElectric}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">Số mới (nhập):</span>
+                      <input
+                        type="number"
+                        value={row.newElectric}
+                        onChange={(e) =>
+                          handleInputChange(index, 'newElectric', parseInt(e.target.value, 10) || 0)
+                        }
+                        className={`w-full px-2 py-1 text-xs rounded-sm font-mono font-bold border focus:outline-hidden ${
+                          isElectricAbnormal
+                            ? 'border-rose-500 bg-rose-50 text-rose-700'
+                            : 'border-slate-300 bg-white text-slate-900'
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Water Box */}
+                <div className="p-2.5 bg-cyan-50/40 border border-cyan-200/80 rounded-sm space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 font-bold text-cyan-900">
+                      <Droplets className="w-3.5 h-3.5 text-cyan-600" />
+                      <span>Chỉ số Nước (m³)</span>
+                    </div>
+                    <div className="font-mono text-xs font-bold">
+                      {isWaterAbnormal ? (
+                        <span className="text-rose-600 inline-flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          +{waterUsage} m³
+                        </span>
+                      ) : (
+                        <span className="text-cyan-800">+{waterUsage} m³</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">Số cũ:</span>
+                      <span className="font-mono font-medium text-slate-700 text-xs">{row.oldWater}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">Số mới (nhập):</span>
+                      <input
+                        type="number"
+                        value={row.newWater}
+                        onChange={(e) =>
+                          handleInputChange(index, 'newWater', parseInt(e.target.value, 10) || 0)
+                        }
+                        className={`w-full px-2 py-1 text-xs rounded-sm font-mono font-bold border focus:outline-hidden ${
+                          isWaterAbnormal
+                            ? 'border-rose-500 bg-rose-50 text-rose-700'
+                            : 'border-slate-300 bg-white text-slate-900'
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Motorbike row */}
+                <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-xs">
+                  <span className="text-slate-600 font-medium">Số lượng xe máy gửi:</span>
+                  <select
+                    value={row.motorbikeCount}
+                    onChange={(e) =>
+                      handleInputChange(index, 'motorbikeCount', parseInt(e.target.value, 10))
+                    }
+                    className="px-2 py-1 rounded-sm border border-slate-200 bg-white text-xs font-medium cursor-pointer"
+                  >
+                    <option value={0}>0 xe (0đ)</option>
+                    <option value={1}>1 xe</option>
+                    <option value={2}>2 xe</option>
+                    <option value={3}>3 xe</option>
+                  </select>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

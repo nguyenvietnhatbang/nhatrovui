@@ -303,7 +303,8 @@ export default function CashbookPage() {
 
       {/* Main Table Grid */}
       <div className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-2xs">
-        <div className="overflow-x-auto">
+        {/* Main Table Grid (Desktop Only) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead className="bg-slate-100/90 border-b border-slate-200 text-slate-900 font-bold uppercase text-xs tracking-wider">
               <tr>
@@ -432,6 +433,103 @@ export default function CashbookPage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Cards View (Hidden on Desktop) */}
+        <div className="block md:hidden p-2.5 space-y-2">
+          {paginatedTxs.length === 0 ? (
+            <div className="py-8 text-center text-slate-400 text-xs">
+              Không có bản ghi thu chi nào
+            </div>
+          ) : (
+            paginatedTxs.map((tx) => {
+              const isIncome = tx.type === 'INCOME';
+
+              return (
+                <div
+                  key={tx.id}
+                  className="p-3 bg-white rounded-md border border-slate-200 shadow-2xs space-y-2.5"
+                >
+                  {/* Card Header: Receipt # + Amount */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-sm text-slate-900">
+                          {tx.receiptNumber}
+                        </span>
+                        {tx.roomNumber && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-xs font-bold text-[11px] bg-slate-100 text-slate-800 border border-slate-200">
+                            P.{tx.roomNumber}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Ngày ghi: {formatDate(tx.date)}
+                      </div>
+                    </div>
+
+                    <div
+                      className={`font-mono font-bold text-sm text-right shrink-0 ${
+                        isIncome ? 'text-emerald-700' : 'text-rose-700'
+                      }`}
+                    >
+                      {isIncome ? '+' : '-'}{formatCurrency(tx.amount)}
+                    </div>
+                  </div>
+
+                  {/* Category & Description */}
+                  <div className="space-y-1 text-xs pt-1 border-t border-slate-100">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`w-2 h-2 rounded-full shrink-0 ${
+                          isIncome ? 'bg-emerald-600' : 'bg-rose-600'
+                        }`}
+                      />
+                      <span className="font-bold text-slate-900">
+                        {tx.category}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        ({isIncome ? 'Thu vào' : 'Chi ra'})
+                      </span>
+                    </div>
+
+                    <div className="text-slate-700 text-xs bg-slate-50 p-2 rounded-sm border border-slate-100">
+                      {tx.description}
+                    </div>
+                  </div>
+
+                  {/* Card Actions */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                    <button
+                      onClick={() => setViewingTx(tx)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Xem phiếu</span>
+                    </button>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => handleOpenEdit(tx)}
+                        className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-sm border border-slate-200 transition-colors cursor-pointer"
+                        title="Sửa phiếu"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => setDeletingTx(tx)}
+                        className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-sm border border-rose-200 transition-colors cursor-pointer"
+                        title="Xóa phiếu"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
         <TablePagination

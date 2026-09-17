@@ -165,8 +165,8 @@ export default function InvoicesPage() {
         </div>
       </div>
 
-      {/* Invoices Table Grid */}
-      <div className="overflow-x-auto">
+      {/* Invoices Table Grid (Desktop Only) */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left text-xs text-slate-800">
           <thead className="border-b border-slate-200 bg-slate-100/90 text-slate-900 text-xs font-bold uppercase tracking-wider">
             <tr>
@@ -309,6 +309,132 @@ export default function InvoicesPage() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Cards View (Hidden on Desktop) */}
+      <div className="block md:hidden p-2.5 space-y-2">
+        {paginatedInvoices.length === 0 ? (
+          <div className="py-8 text-center text-slate-400 text-xs">
+            Không tìm thấy hóa đơn nào phù hợp.
+          </div>
+        ) : (
+          paginatedInvoices.map((inv) => {
+            const statusCfg = INVOICE_STATUS_CONFIG[inv.status];
+            const utilitiesTotal =
+              inv.electricTotal +
+              inv.waterTotal +
+              inv.garbageFee +
+              inv.internetFee +
+              inv.parkingFee +
+              inv.serviceFee +
+              inv.otherFee;
+
+            return (
+              <div
+                key={inv.id}
+                className="p-3 bg-white rounded-md border border-slate-200 shadow-2xs space-y-2.5"
+              >
+                {/* Card Header: Room + Code + Status */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-black text-sm text-slate-900">
+                        Phòng {inv.roomNumber}
+                      </span>
+                      <span className="text-[11px] font-mono font-medium text-slate-500">
+                        {inv.code}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">
+                      Kỳ: {inv.month}
+                    </div>
+                  </div>
+
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${statusCfg.badgeClass}`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusCfg.dotClass}`} />
+                    {statusCfg.label}
+                  </span>
+                </div>
+
+                {/* Tenant Info */}
+                <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-sm border border-slate-100 text-xs">
+                  <AvatarLetter name={inv.tenantName} size="sm" color="blue" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-slate-900 truncate">{inv.tenantName}</div>
+                    <div className="text-[10px] font-mono text-slate-500">{inv.tenantPhone}</div>
+                  </div>
+                  {inv.tenantPhone && (
+                    <a
+                      href={`tel:${inv.tenantPhone}`}
+                      className="p-1.5 text-emerald-600 hover:bg-emerald-100/50 rounded-sm"
+                      title="Gọi khách"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+
+                {/* Price Breakdown */}
+                <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-100">
+                  <div>
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold">Tiền phòng</span>
+                    <div className="font-mono font-medium text-slate-800 mt-0.5">
+                      {formatCurrency(inv.roomPrice)}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold">Điện + Nước + DV</span>
+                    <div className="font-mono font-medium text-slate-700 mt-0.5">
+                      {formatCurrency(utilitiesTotal)}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total Highlight */}
+                <div className="flex items-center justify-between p-2 rounded-sm bg-slate-100/70 border border-slate-200">
+                  <span className="text-xs font-bold text-slate-700">Tổng thanh toán:</span>
+                  <span className="text-sm font-black font-mono text-slate-900">
+                    {formatCurrency(inv.totalAmount)}
+                  </span>
+                </div>
+
+                {/* Card Actions */}
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                  <button
+                    onClick={() => setViewingInvoice(inv)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <QrCode className="w-3.5 h-3.5" />
+                    <span>Mã VietQR</span>
+                  </button>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => {
+                        setViewingInvoice(inv);
+                        setTimeout(() => window.print(), 200);
+                      }}
+                      className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-sm border border-slate-200 transition-colors cursor-pointer"
+                      title="In hóa đơn"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setDeletingInvoice(inv)}
+                      className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-sm border border-rose-200 transition-colors cursor-pointer"
+                      title="Xóa hóa đơn"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
       {/* Pagination Bar */}
