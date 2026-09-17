@@ -14,9 +14,14 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    if (remember) {
+      localStorage.setItem('trocloud_auth', 'true');
+    } else {
+      sessionStorage.setItem('trocloud_auth', 'true');
+    }
     setTimeout(() => {
       router.push('/');
-    }, 400);
+    }, 300);
   };
 
   return (

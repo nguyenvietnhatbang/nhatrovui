@@ -144,6 +144,12 @@ export function Sidebar() {
 
         <Link
           href="/login"
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('trocloud_auth');
+              sessionStorage.removeItem('trocloud_auth');
+            }
+          }}
           className="p-1.5 text-slate-400 hover:text-rose-600 rounded transition-colors"
           title="Đăng xuất"
         >
