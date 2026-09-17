@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Search,
   Filter,
@@ -270,10 +271,10 @@ export default function TenantsPage() {
 
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>+ Tạo</span>
+            <span>Thêm khách</span>
           </button>
         </div>
       </div>
@@ -349,12 +350,12 @@ export default function TenantsPage() {
                       <div className="flex items-center gap-2">
                         <AvatarLetter name={tenant.name} size="md" color="blue" />
                         <div>
-                          <button
-                            onClick={() => setViewingTenant(tenant)}
-                            className="font-bold text-slate-900 hover:text-blue-600 transition-colors text-left text-xs cursor-pointer"
+                          <Link
+                            href={`/tenants/${tenant.id}`}
+                            className="font-bold text-slate-900 hover:text-blue-600 transition-colors text-left text-xs cursor-pointer block"
                           >
                             {tenant.name}
-                          </button>
+                          </Link>
                           {tenant.job && (
                             <div className="text-[10px] text-slate-400 truncate max-w-[150px]">
                               {tenant.job}
@@ -387,8 +388,17 @@ export default function TenantsPage() {
                     </td>
 
                     {/* Phòng đang ở */}
-                    <td className="py-2 px-3 font-bold text-slate-900">
-                      {room ? room.roomNumber : '-'}
+                    <td className="py-2 px-3">
+                      {room ? (
+                        <Link
+                          href={`/rooms/${room.id}`}
+                          className="font-bold text-blue-600 hover:underline text-xs"
+                        >
+                          {room.roomNumber}
+                        </Link>
+                      ) : (
+                        <span className="text-slate-400">-</span>
+                      )}
                     </td>
 
                     {/* Công nợ */}
@@ -422,14 +432,14 @@ export default function TenantsPage() {
                           <Phone className="w-3.5 h-3.5" />
                         </button>
 
-                        {/* 2. View Slide Drawer (Eye) */}
-                        <button
-                          onClick={() => setViewingTenant(tenant)}
+                        {/* 2. View Details 360° (Eye) */}
+                        <Link
+                          href={`/tenants/${tenant.id}`}
                           className="text-slate-400 hover:text-blue-600 transition-colors cursor-pointer"
-                          title="Xem chi tiết hồ sơ (Trượt cạnh phải)"
+                          title="Xem chi tiết hồ sơ 360°"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                        </button>
+                        </Link>
 
                         {/* 3. Edit Modal (Pencil) */}
                         <button

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Search,
   RefreshCw,
@@ -230,10 +231,10 @@ export default function RoomsPage() {
 
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>+ Tạo</span>
+            <span>Thêm phòng</span>
           </button>
         </div>
       </div>
@@ -296,8 +297,14 @@ export default function RoomsPage() {
                         />
                       </td>
 
-                      <td className="py-2 px-3 font-black text-slate-900 text-sm">
-                        {room.roomNumber}
+                      <td className="py-2 px-3">
+                        <Link
+                          href={`/rooms/${room.id}`}
+                          className="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors text-xs"
+                          title="Xem chi tiết phòng 360°"
+                        >
+                          {room.roomNumber}
+                        </Link>
                       </td>
 
                       <td className="py-2 px-3 text-slate-700 font-medium">Tầng {room.floor}</td>
@@ -312,10 +319,13 @@ export default function RoomsPage() {
 
                       <td className="py-2 px-3">
                         {tenant ? (
-                          <div className="flex items-center gap-2">
-                            <AvatarLetter name={tenant.name} size="sm" color="blue" />
-                            <span className="font-bold text-slate-900">{tenant.name}</span>
-                          </div>
+                          <Link
+                            href={`/tenants/${tenant.id}`}
+                            className="font-bold text-slate-900 hover:text-blue-600 transition-colors"
+                            title="Xem hồ sơ khách"
+                          >
+                            {tenant.name}
+                          </Link>
                         ) : (
                           <span className="text-slate-400 italic">Chưa có khách</span>
                         )}
@@ -336,13 +346,13 @@ export default function RoomsPage() {
 
                       <td className="py-2 px-3 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => setViewingRoom(room)}
-                            className="text-slate-400 hover:text-blue-600 transition-colors cursor-pointer"
-                            title="Xem chi tiết phòng (Trượt phải)"
+                          <Link
+                            href={`/rooms/${room.id}`}
+                            className="text-slate-400 hover:text-blue-600 transition-colors"
+                            title="Xem chi tiết phòng 360°"
                           >
                             <Eye className="w-3.5 h-3.5" />
-                          </button>
+                          </Link>
 
                           <button
                             onClick={() => handleOpenEdit(room)}
@@ -376,14 +386,14 @@ export default function RoomsPage() {
             const statusCfg = ROOM_STATUS_CONFIG[room.status];
 
             return (
-              <div
+              <Link
                 key={room.id}
-                onClick={() => setViewingRoom(room)}
-                className="p-2.5 rounded-md border border-slate-200 bg-white hover:border-slate-800 transition-all cursor-pointer flex flex-col justify-between shadow-2xs"
+                href={`/rooms/${room.id}`}
+                className="p-2.5 rounded-md border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-1">
-                    <span className="font-black text-sm text-slate-900">{room.roomNumber}</span>
+                    <span className="font-bold text-xs text-blue-600 hover:underline">{room.roomNumber}</span>
                     <span
                       className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0 ${statusCfg.badgeClass}`}
                     >
@@ -398,12 +408,12 @@ export default function RoomsPage() {
 
                 <div className="mt-2.5 pt-1.5 border-t border-slate-100 text-[11px] truncate">
                   {tenant ? (
-                    <span className="font-bold text-slate-900">{tenant.name}</span>
+                    <span className="font-medium text-slate-900">{tenant.name}</span>
                   ) : (
                     <span className="text-slate-400 italic">Trống</span>
                   )}
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
